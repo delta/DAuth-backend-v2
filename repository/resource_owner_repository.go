@@ -9,4 +9,5 @@ import (
 type ResourceOwnerRepository interface {
 	Insert(ctx context.Context, resource entity.ResourceOwner) entity.ResourceOwner
 	Delete(ctx context.Context, resource entity.ResourceOwner)
+	Exists(ctx context.Context, resource entity.ResourceOwner) bool
 }

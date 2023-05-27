@@ -1,7 +1,12 @@
 package service
 
-import "context"
+import (
+	"context"
+
+	"github.com/delta/DAuth-backend-v2/entity"
+)
 
 type AuthService interface {
-	Login(ctx context.Context)
+	Create(ctx context.Context, resource entity.ResourceOwner) entity.ResourceOwner
+	Delete(ctx context.Context, resource entity.ResourceOwner)
 }

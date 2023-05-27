@@ -3,48 +3,56 @@ package database
 import (
 	"fmt"
 	"log"
-	"math/rand"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/delta/DAuth-backend-v2/config"
+	"github.com/fatih/color"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
-func NewDatabase(config config.Config) *gorm.DB {
-	username := config.Get("DATASOURCE_USERNAME")
-	password := config.Get("DATASOURCE_PASSWORD")
-	host := config.Get("DATASOURCE_HOST")
-	port := config.Get("DATASOURCE_PORT")
-	dbName := config.Get("DATASOURCE_DB_NAME")
-	maxPoolOpen, err := strconv.Atoi(config.Get("DATASOURCE_POOL_MAX_CONN"))
+func Connect(config config.Config) *gorm.DB {
+	username := config.Get("DB_USERNAME")
+	password := config.Get("DB_PASSWORD")
+	host := config.Get("DB_HOST")
+	port := config.Get("DB_PORT")
+	dbName := config.Get("DB_NAME")
+
+	logFile, err := os.OpenFile("./logs/database.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+
 	if err != nil {
-		fmt.Printf("Error %s", err)
+		panic(color.RedString("Error opening logs: %s", err))
 	}
-	maxPoolIdle, err := strconv.Atoi(config.Get("DATASOURCE_POOL_IDLE_CONN"))
-	maxPollLifeTime, err := strconv.Atoi(config.Get("DATASOURCE_POOL_LIFE_TIME"))
 
 	loggerDb := logger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags),
+		log.New(logFile, "\r\n", log.LstdFlags),
 		logger.Config{
 			SlowThreshold:             time.Second,
 			LogLevel:                  logger.Info,
-			IgnoreRecordNotFoundError: true,
+			IgnoreRecordNotFoundError: false,
 			Colorful:                  true,
 		},
 	)
 
-	db, err := gorm.Open(mysql.Open(username+":"+password+"@tcp("+host+":"+port+")/"+dbName+"?parseTime=true"), &gorm.Config{
+	dns := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		username,
+		password,
+		host,
+		port,
+		dbName,
+	)
+
+	db, err := gorm.Open(mysql.Open(dns), &gorm.Config{
 		Logger: loggerDb,
 	})
 
-	sqlDB, err := db.DB()
+	if err != nil {
+		panic(color.RedString("Error: %s", err))
+	} else {
+		fmt.Printf(color.GreenString("Database connected!"))
+	}
 
-	sqlDB.SetMaxOpenConns(maxPoolOpen)
-	sqlDB.SetMaxIdleConns(maxPoolIdle)
-	sqlDB.SetConnMaxLifetime(time.Duration(rand.Int31n(int32(maxPollLifeTime))) * time.Millisecond)
 	return db
 }
