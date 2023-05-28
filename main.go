@@ -4,12 +4,9 @@ import (
 	"fmt"
 
 	config "github.com/delta/DAuth-backend-v2/config/impl"
-	controller "github.com/delta/DAuth-backend-v2/controller/impl"
 	"github.com/delta/DAuth-backend-v2/database"
-	"github.com/delta/DAuth-backend-v2/entity"
-	repository "github.com/delta/DAuth-backend-v2/repository/impl"
-	router "github.com/delta/DAuth-backend-v2/router/impl"
-	service "github.com/delta/DAuth-backend-v2/service/impl"
+	"github.com/delta/DAuth-backend-v2/registry"
+	"github.com/delta/DAuth-backend-v2/router"
 	"github.com/fatih/color"
 
 	"github.com/gofiber/fiber/v2"
@@ -17,17 +14,14 @@ import (
 
 func main() {
 	config := config.New()
-	database := database.Connect(config)
+	db := database.Connect(config)
+	database.Migrate(db)
 
-	entity.Migrate(database)
-
-	resourceRepository := repository.NewResourceOwnerRepositoryImpl(database)
-	authService := service.NewAuthServiceImpl(resourceRepository)
-	authController := controller.NewAuthControllerImpl(authService)
-	authRouter := router.NewAuthRouterImpl(authController)
+	registry:= registry.NewRegistry(db)
 
 	app := fiber.New()
-	authRouter.Route(app)
+
+	router.NewAppRouter(app,registry)
 	
 	err := app.Listen(":" + config.Get("PORT"))
 
