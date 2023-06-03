@@ -1,18 +1,57 @@
-# Dauth-Backend-V2
+# DAuth-Backend-v2
+___
 
-## Process of setting a route
+### Requirements
+* [Go](https://go.dev/)
+* [golangci](https://golangci-lint.run/usage/install/)
+* [mysql](https://www.mysql.com/)
 
-1. Put your route in router (or create different router for grouping routes)
-2. Make controller associated with that router
-3. The controller will be using services that it'll take a parameter
-   while constructing the controller, One controller should have one service
-4. Now create that Service to be used by the controller
-5. Service can take One or more repository for to implement that feature, Service
-   Can also require config and other information that can be passed while creating
-   the service
-6. Create Repositories that might be required by the Service.
-7. Repositories required DB connection which is already present
+### Setup
+* Configure .vscode/settings.json
+    ```
+    {
+        "go.lintTool":"golangci-lint",
+        "go.lintFlags": [
+        "--fast"
+        ],
+        "go.lintOnSave": "package",
+        "go.formatTool": "goimports",
+        "go.useLanguageServer": true,
+        "[go]": {
+            "editor.formatOnSave": true,
+            "editor.codeActionsOnSave": {
+                "source.organizeImports": true
+            }
+        },
+        "go.docsTool": "gogetdoc"
+    }
+    ```
+* Enable githooks
+    ``` sh
+    git config core.hooksPath .githooks
+    ``` 
+* Create .env file
+    ``` sh
+    cp .env.example .env
+    ```
 
-## Layers
+* Install reflex
+   ``` sh
+   go install github.com/cespare/reflex@latest
+   ```
 
-Database Connection -> (Models + Repositories) -> Services -> Controllers -> Router -> Application
+
+* Configure database settings in config.json
+
+### Run with Reflex
+* 
+    ``` sh
+    reflex -s -r '\.go$$' go run main.go
+    ```
+
+### Run
+* 
+    ``` sh
+    go run main.go
+    ```
+   

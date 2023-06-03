@@ -51,7 +51,7 @@ func Connect(config config.Config) *gorm.DB {
 	if err != nil {
 		panic(color.RedString("Error: %s", err))
 	} else {
-		fmt.Printf(color.GreenString("Database connected!"))
+		fmt.Print(color.GreenString("Database connected!"))
 	}
 
 	return db

@@ -17,12 +17,12 @@ func main() {
 	db := database.Connect(config)
 	database.Migrate(db)
 
-	registry:= registry.NewRegistry(db)
+	registry := registry.NewRegistry(db)
 
 	app := fiber.New()
 
-	router.NewAppRouter(app,registry)
-	
+	router.NewAppRouter(app, registry)
+
 	err := app.Listen(":" + config.Get("PORT"))
 
 	if err != nil {

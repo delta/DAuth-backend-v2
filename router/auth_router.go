@@ -5,8 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-
-func NewAuthRouter(app fiber.Router,controller controller.AuthController){
+func NewAuthRouter(app fiber.Router, controller controller.AuthController) {
 	app.Post("/add", controller.Insert)
 	app.Delete("/delete", controller.Remove)
 }

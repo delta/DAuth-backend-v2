@@ -6,7 +6,7 @@ import (
 )
 
 func Migrate(db *gorm.DB) {
-	for _, entity := range[] interface {} {
+	for _, entity := range []interface{}{
 		entity.ResourceOwner{},
 	} {
 		if err := db.AutoMigrate(&entity); err != nil {

@@ -1,0 +1,28 @@
+#!/bin/sh
+
+LIME_YELLOW=$(tput setaf 190)
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+
+echo "${LIME_YELLOW}======================================================================"
+echo "${LIME_YELLOW}Running Commit message syntax check"
+echo "${LIME_YELLOW}======================================================================"
+commit_regex='^(feat|fix|build|chore|docs|style|refactor|perf|test|init)(\(.+\))?!?: (.+[^.\r\n])([\r\n]+(.+[\r\n]+)+)?$'
+
+if ! grep -iqE "${commit_regex}" "$1"; then
+    echo "
+    Please follow the below convention when writing your commit message
+    <type>[optional scope]: <description>
+
+    [optional body]
+
+    [optional footer(s)]"
+    printf "${RED}======================================================================\n"
+    printf "${RED}Error in Commit message syntax check\n"
+    printf "${RED}======================================================================\n"
+    exit 1
+fi
+
+printf "${GREEN}======================================================================\n"
+printf "${GREEN} Committed Successfully\n"
+printf "${GREEN}======================================================================\n"

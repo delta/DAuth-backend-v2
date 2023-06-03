@@ -24,6 +24,6 @@ func (impl *authServiceImpl) Delete(ctx context.Context, resource entity.Resourc
 	if !impl.repository.Exists(ctx, resource) {
 		return
 	}
-	
+
 	impl.repository.Delete(ctx, resource)
 }

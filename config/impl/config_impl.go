@@ -7,7 +7,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type configImpl struct {}
+type configImpl struct{}
 
 func (config *configImpl) Get(key string) string {
 	return os.Getenv(key)
