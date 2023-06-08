@@ -7,4 +7,9 @@ done
 
 sleep 3
 
-$1
+if [[ "$1" == "DEV" ]]
+then
+   reflex -s -r '\.go$$' go run main.go
+else
+   $1
+fi

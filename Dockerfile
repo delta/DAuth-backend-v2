@@ -12,7 +12,8 @@ RUN go install github.com/cespare/reflex@latest
 
 COPY . .
 
-CMD reflex -s -r '\.go$$' go run main.go
+ENTRYPOINT [ "/app/entry.sh" ]
+CMD [ "DEV" ]
 
 FROM builder as prod_builder
 
