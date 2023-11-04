@@ -5,6 +5,10 @@ import (
 	impl "github.com/delta/DAuth-backend-v2/service/impl"
 )
 
-func (r *registry) NewAuthService() service.AuthService {
-	return impl.NewAuthServiceImpl(r.NewResourceOwnerRepository())
+func (r *registry) NewResourceService() service.ResourceService {
+	return impl.NewResourceServiceImpl(r.NewResourceOwnerRepository())
+}
+
+func (r *registry) NewEmailService() service.EmailService {
+	return impl.NewEmailServiceImpl(r.NewEmailRepository())
 }

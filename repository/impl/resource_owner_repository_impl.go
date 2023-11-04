@@ -43,3 +43,25 @@ func (repository *resourceOwnerRepositoryImpl) Exists(ctx context.Context, resou
 
 	return count == 1
 }
+
+func (repository *resourceOwnerRepositoryImpl) FindByEmailID(ctx context.Context, resource int64) entity.ResourceOwner {
+	var userDetails entity.ResourceOwner
+	err := repository.DB.WithContext(ctx).Where("email_id = ?", resource).First(&userDetails).Error
+
+	if err != nil {
+		fmt.Println("Error : User not found")
+	}
+
+	return userDetails
+}
+
+func (repository *resourceOwnerRepositoryImpl) FindByID(ctx context.Context, resource int64) entity.ResourceOwner {
+	var userDetails entity.ResourceOwner
+	err := repository.DB.WithContext(ctx).Where("id = ?", resource).First(&userDetails).Error
+
+	if err != nil {
+		fmt.Println("Error : User not found")
+	}
+
+	return userDetails
+}

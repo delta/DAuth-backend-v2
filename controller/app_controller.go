@@ -1,5 +1,6 @@
 package controller
 
 type AppController struct {
-	Auth AuthController
+	Auth     AuthController
+	Resource ResourceController
 }

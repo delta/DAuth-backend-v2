@@ -6,5 +6,9 @@ import (
 )
 
 func (r *registry) NewAuthController() controller.AuthController {
-	return impl.NewAuthControllerImpl(r.NewAuthService())
+	return impl.NewAuthControllerImpl(r.NewResourceService(), r.NewEmailService())
+}
+
+func (r *registry) NewResourceController() controller.ResourceController {
+	return impl.NewResourceControllerImpl(r.NewResourceService())
 }

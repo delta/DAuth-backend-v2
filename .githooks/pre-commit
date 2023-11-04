@@ -22,7 +22,7 @@ printf "${LIME_YELLOW}Running golangci-lint on all staged *.go files...${NORMAL}
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
 
-golangci-lint run
+$GOLANGCI_LINT run
 
 if [[ $? != 0 ]]; then
   printf "${RED}Linting failed! ${NORMAL}Please fix errors before committing.\n"

@@ -13,11 +13,12 @@ import (
 )
 
 type authControllerImpl struct {
-	authService service.AuthService
+	resourceService service.ResourceService
+	emailService    service.EmailService
 }
 
-func NewAuthControllerImpl(authService service.AuthService) controller.AuthController {
-	return &authControllerImpl{authService}
+func NewAuthControllerImpl(resourceService service.ResourceService, emailService service.EmailService) controller.AuthController {
+	return &authControllerImpl{resourceService, emailService}
 }
 
 // Insert inserts a new resource owner.
@@ -47,7 +48,7 @@ func (impl *authControllerImpl) Insert(c *fiber.Ctx) error {
 		Name: body.Name,
 	}
 
-	response := impl.authService.Create(c.Context(), resource)
+	response := impl.resourceService.Create(c.Context(), resource)
 	return c.Status(fiber.StatusCreated).JSON(response)
 }
 
@@ -78,6 +79,67 @@ func (impl *authControllerImpl) Remove(c *fiber.Ctx) error {
 		Name: body.Name,
 	}
 
-	impl.authService.Delete(c.Context(), resource)
+	impl.resourceService.Delete(c.Context(), resource)
 	return c.Status(fiber.StatusAccepted).SendString("Success")
+}
+
+func (impl *authControllerImpl) Login(c *fiber.Ctx) error {
+	var req model.LoginRequest
+
+	err := c.BodyParser(&req)
+
+	if err != nil {
+		fmt.Printf("Error parsing: %s", err)
+		return err
+	}
+
+	var userEmail entity.Email
+
+	if userEmail = impl.emailService.FindByEmail(c.Context(), req); err != nil {
+		return c.Status(fiber.StatusUnauthorized).SendString("Email Not Found")
+	}
+
+	var userDetails entity.ResourceOwner
+
+	if userDetails = impl.resourceService.FindByEmailID(c.Context(), userEmail.ID); userDetails == (entity.ResourceOwner{}) {
+		return c.Status(fiber.StatusUnauthorized).SendString("User Not Found")
+	}
+
+	if utils.CheckPasswordHash(req.Password, userDetails.Password) {
+
+		jwtToken, err := utils.GenerateToken(userDetails.ID)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		return c.Status(fiber.StatusAccepted).JSON(jwtToken)
+	}
+	return c.Status(fiber.StatusUnauthorized).SendString("Invalid Credentials")
+}
+
+func (impl *authControllerImpl) IsAuth(c *fiber.Ctx) error {
+
+	userToken := c.Cookies("access_token")
+
+	userID, err := utils.VerifyToken(userToken)
+
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
+	}
+
+	if userID != 0 {
+		userDetails := impl.resourceService.FindByID(c.Context(), userID)
+		return c.Status(fiber.StatusAccepted).JSON(userDetails)
+	}
+
+	return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
+}
+
+func (impl *authControllerImpl) EditProfile(c *fiber.Ctx) error {
+	// var req model.EditProfile
+
+	// if ok := utils.IsValidPhoneNumber(req.PhoneNumber); !ok {
+
+	// }
+	return c.Status(fiber.StatusUnauthorized).SendString("Profile Updated")
 }

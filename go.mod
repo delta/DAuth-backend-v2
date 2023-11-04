@@ -1,6 +1,6 @@
 module github.com/delta/DAuth-backend-v2
 
-go 1.20
+go 1.18
 
 require (
 	github.com/gofiber/fiber/v2 v2.46.0
