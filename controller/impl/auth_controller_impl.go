@@ -144,5 +144,5 @@ func (impl *authControllerImpl) EditProfile(c *fiber.Ctx) error {
 	// if ok := utils.IsValidPhoneNumber(req.PhoneNumber); !ok {
 
 	// }
-	return c.Status(fiber.StatusUnauthorized).SendString("Profile Updated")
+	return c.Status(fiber.StatusOK).SendString("Profile Updated")
 }
