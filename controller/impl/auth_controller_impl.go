@@ -95,14 +95,14 @@ func (impl *authControllerImpl) Login(c *fiber.Ctx) error {
 
 	var userEmail entity.Email
 
-	if userEmail = impl.emailService.FindByEmail(c.Context(), req); err != nil {
-		return c.Status(fiber.StatusUnauthorized).SendString("Email Not Found")
+	if userEmail, err = impl.emailService.FindByEmail(c.Context(), req); err != nil {
+		return c.Status(fiber.StatusUnauthorized).SendString(err.Error())
 	}
 
 	var userDetails entity.ResourceOwner
 
-	if userDetails = impl.resourceService.FindByEmailID(c.Context(), userEmail.ID); userDetails == (entity.ResourceOwner{}) {
-		return c.Status(fiber.StatusUnauthorized).SendString("User Not Found")
+	if userDetails, err = impl.resourceService.FindByEmailID(c.Context(), userEmail.ID); err != nil {
+		return c.Status(fiber.StatusUnauthorized).SendString(err.Error())
 	}
 
 	if utils.CheckPasswordHash(req.Password, userDetails.Password) {
@@ -112,7 +112,7 @@ func (impl *authControllerImpl) Login(c *fiber.Ctx) error {
 			fmt.Println(err)
 		}
 
-		return c.Status(fiber.StatusAccepted).JSON(jwtToken)
+		return c.Status(fiber.StatusOK).JSON(jwtToken)
 	}
 	return c.Status(fiber.StatusUnauthorized).SendString("Invalid Credentials")
 }
@@ -128,8 +128,11 @@ func (impl *authControllerImpl) IsAuth(c *fiber.Ctx) error {
 	}
 
 	if userID != 0 {
-		userDetails := impl.resourceService.FindByID(c.Context(), userID)
-		return c.Status(fiber.StatusAccepted).JSON(userDetails)
+		userDetails, err := impl.resourceService.FindByID(c.Context(), userID)
+		if err != nil {
+			return c.Status(fiber.StatusUnauthorized).SendString(err.Error())
+		}
+		return c.Status(fiber.StatusOK).JSON(userDetails)
 	}
 
 	return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")

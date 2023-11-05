@@ -8,5 +8,5 @@ import (
 )
 
 type EmailService interface {
-	FindByEmail(ctx context.Context, resource model.LoginRequest) entity.Email
+	FindByEmail(ctx context.Context, resource model.LoginRequest) (entity.Email, error)
 }

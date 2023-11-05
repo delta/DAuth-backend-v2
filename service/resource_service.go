@@ -7,8 +7,6 @@ import (
 )
 
 type ResourceService interface {
-	Create(ctx context.Context, resource entity.ResourceOwner) entity.ResourceOwner
-	Delete(ctx context.Context, resource entity.ResourceOwner)
-	FindByEmailID(ctx context.Context, resource int64) entity.ResourceOwner
-	FindByID(ctx context.Context, resource int64) entity.ResourceOwner
+	FindByEmailID(ctx context.Context, resource int64) (entity.ResourceOwner, error)
+	FindByID(ctx context.Context, resource int64) (entity.ResourceOwner, error)
 }
