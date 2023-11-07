@@ -7,6 +7,7 @@ import (
 	"github.com/delta/DAuth-backend-v2/database"
 	"github.com/delta/DAuth-backend-v2/registry"
 	"github.com/delta/DAuth-backend-v2/router"
+	"github.com/delta/DAuth-backend-v2/utils"
 	"github.com/fatih/color"
 
 	"github.com/gofiber/fiber/v2"
@@ -14,6 +15,7 @@ import (
 
 func main() {
 	config := config.New()
+	utils.InitLogger()
 	db := database.Connect(config)
 	database.Migrate(db)
 
