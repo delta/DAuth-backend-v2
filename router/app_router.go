@@ -2,7 +2,7 @@ package router
 
 import (
 	// Include docs for Swagger UI generation
-	_ "github.com/delta/DAuth-backend-v2/docs"
+	// _ "github.com/delta/DAuth-backend-v2/docs"
 	"github.com/delta/DAuth-backend-v2/middleware"
 	"github.com/delta/DAuth-backend-v2/registry"
 	"github.com/gofiber/fiber/v2"

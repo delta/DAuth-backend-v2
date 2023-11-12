@@ -3,6 +3,7 @@ package impl
 import (
 	"fmt"
 
+	config "github.com/delta/DAuth-backend-v2/config/impl"
 	"github.com/delta/DAuth-backend-v2/controller"
 	"github.com/delta/DAuth-backend-v2/entity"
 	"github.com/delta/DAuth-backend-v2/model"
@@ -21,69 +22,8 @@ func NewAuthControllerImpl(resourceService service.ResourceService, emailService
 	return &authControllerImpl{resourceService, emailService}
 }
 
-// Insert inserts a new resource owner.
-// @Summary Insert a new resource owner
-// @Description Inserts a new resource owner.
-// @Tags Auth
-// @Accept json
-// @Produce json
-// @Param resource body model.Resource true "Resource object to be inserted"
-// @Success 201 {object} model.Resource
-// @Error 400 {string} BadRequest "Error parsing: {{errMsg}}"
-// @Router /api/auth/add [post]
-func (impl *authControllerImpl) Insert(c *fiber.Ctx) error {
-	var body model.Resource
-	err := c.BodyParser(&body)
-
-	// Using Logger
-	logger := utils.GetControllerLogger("Insert")
-	logger.Info("Insert Controller Used")
-
-	if err != nil {
-		fmt.Printf("Error parsing: %s", err)
-		return err
-	}
-
-	resource := entity.ResourceOwner{
-		Name: body.Name,
-	}
-
-	response := impl.resourceService.Create(c.Context(), resource)
-	return c.Status(fiber.StatusCreated).JSON(response)
-}
-
-// Remove removes a resource owner.
-// @Summary Remove a resource owner
-// @Description Removes a resource owner
-// @Tags Auth
-// @Accept json
-// @Produce plain
-// @Param resource body model.Resource true "Resource object to be removed"
-// @Success 202 {string} string "Success"
-// @Error 400 {string} BadRequest "Error parsing: {{errMsg}}"
-// @Router /api/auth/delete [delete]
-func (impl *authControllerImpl) Remove(c *fiber.Ctx) error {
-	var body model.Resource
-	err := c.BodyParser(&body)
-
-	// Using Logger
-	logger := utils.GetControllerLogger("Delete")
-	logger.Info("Delete Controller Used")
-
-	if err != nil {
-		fmt.Printf("Error parsing: %s", err)
-		return err
-	}
-
-	resource := entity.ResourceOwner{
-		Name: body.Name,
-	}
-
-	impl.resourceService.Delete(c.Context(), resource)
-	return c.Status(fiber.StatusAccepted).SendString("Success")
-}
-
 func (impl *authControllerImpl) Login(c *fiber.Ctx) error {
+
 	var req model.LoginRequest
 
 	err := c.BodyParser(&req)
@@ -105,6 +45,9 @@ func (impl *authControllerImpl) Login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).SendString(err.Error())
 	}
 
+	logger := utils.GetControllerLogger("Login")
+	logger.Info(fmt.Sprintf("UserID:%v,Route:", userDetails.ID) + "Login")
+
 	if utils.CheckPasswordHash(req.Password, userDetails.Password) {
 
 		jwtToken, err := utils.GenerateToken(userDetails.ID)
@@ -119,13 +62,18 @@ func (impl *authControllerImpl) Login(c *fiber.Ctx) error {
 
 func (impl *authControllerImpl) IsAuth(c *fiber.Ctx) error {
 
-	userToken := c.Cookies("access_token")
+	config := config.New()
+	accessTokenName := config.Get("ACCESS_TOKEN_NAME")
+	userToken := c.Cookies(accessTokenName)
 
 	userID, err := utils.VerifyToken(userToken)
 
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
 	}
+
+	logger := utils.GetControllerLogger("Is-Auth")
+	logger.Info(fmt.Sprintf("UserID:%v,Route:", userID) + "Is-Auth")
 
 	if userID != 0 {
 		userDetails, err := impl.resourceService.FindByID(c.Context(), userID)
