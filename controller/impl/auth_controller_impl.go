@@ -28,8 +28,10 @@ func (impl *authControllerImpl) Login(c *fiber.Ctx) error {
 
 	err := c.BodyParser(&req)
 
+	logger := utils.GetControllerLogger("Login")
+
 	if err != nil {
-		fmt.Printf("Error parsing: %s", err)
+		logger.Error(err.Error() + "Route:Login")
 		return err
 	}
 
@@ -45,16 +47,14 @@ func (impl *authControllerImpl) Login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).SendString(err.Error())
 	}
 
-	logger := utils.GetControllerLogger("Login")
-	logger.Info(fmt.Sprintf("UserID:%v,Route:", userDetails.ID) + "Login")
-
 	if utils.CheckPasswordHash(req.Password, userDetails.Password) {
 
 		jwtToken, err := utils.GenerateToken(userDetails.ID)
 		if err != nil {
-			fmt.Println(err)
+			logger.Error(err.Error() + fmt.Sprintf("UserID:%v,Route:", userDetails.ID) + "Login")
 		}
 
+		logger.Info(fmt.Sprintf("UserID:%v,Route:", userDetails.ID) + "Login")
 		return c.Status(fiber.StatusOK).JSON(jwtToken)
 	}
 	return c.Status(fiber.StatusUnauthorized).SendString("Invalid Credentials")
@@ -65,6 +65,7 @@ func (impl *authControllerImpl) IsAuth(c *fiber.Ctx) error {
 	config := config.New()
 	accessTokenName := config.Get("ACCESS_TOKEN_NAME")
 	userToken := c.Cookies(accessTokenName)
+	logger := utils.GetControllerLogger("Is-Auth")
 
 	userID, err := utils.VerifyToken(userToken)
 
@@ -72,14 +73,12 @@ func (impl *authControllerImpl) IsAuth(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
 	}
 
-	logger := utils.GetControllerLogger("Is-Auth")
-	logger.Info(fmt.Sprintf("UserID:%v,Route:", userID) + "Is-Auth")
-
 	if userID != 0 {
 		userDetails, err := impl.resourceService.FindByID(c.Context(), userID)
 		if err != nil {
 			return c.Status(fiber.StatusUnauthorized).SendString(err.Error())
 		}
+		logger.Info(fmt.Sprintf("UserID:%v,Route:", userID) + "Is-Auth")
 		return c.Status(fiber.StatusOK).JSON(userDetails)
 	}
 
