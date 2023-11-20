@@ -54,7 +54,7 @@ func (impl *authControllerImpl) Login(c *fiber.Ctx) error {
 			logger.Error(err.Error() + fmt.Sprintf("UserID:%v", userDetails.ID))
 		}
 
-		logger.Info(fmt.Sprintf("UserID:%v,", userDetails.ID))
+		logger.Info(fmt.Sprintf("UserID:%v", userDetails.ID))
 		return c.Status(fiber.StatusOK).JSON(jwtToken)
 	}
 	return c.Status(fiber.StatusUnauthorized).SendString("Invalid Credentials")
@@ -78,7 +78,7 @@ func (impl *authControllerImpl) IsAuth(c *fiber.Ctx) error {
 		if err != nil {
 			return c.Status(fiber.StatusUnauthorized).SendString(err.Error())
 		}
-		logger.Info(fmt.Sprintf("UserID:%v,", userID))
+		logger.Info(fmt.Sprintf("UserID:%v", userID))
 		return c.Status(fiber.StatusOK).JSON(userDetails)
 	}
 
