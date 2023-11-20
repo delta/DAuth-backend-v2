@@ -14,10 +14,6 @@ type IsAuthRequest struct {
 	Password string `json:"password" form:"password" validation:"required"`
 }
 
-// type loginResponse struct {
-// 	Token string `json:"token"`
-// }
-
 type EditProfile struct {
 	Name        string `json:"name" form:"name" validation:"required"`
 	PhoneNumber string `json:"phoneNumber" form:"phoneNumber" validation:"required"`

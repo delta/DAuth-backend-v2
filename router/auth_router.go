@@ -6,8 +6,6 @@ import (
 )
 
 func NewAuthRouter(app fiber.Router, controller controller.AuthController) {
-	// app.Get("/email/verify", controller.VerifyEmail)
 	app.Get("/is-auth", controller.IsAuth)
 	app.Post("/login", controller.Login)
-	app.Post("/editProfile", controller.EditProfile)
 }

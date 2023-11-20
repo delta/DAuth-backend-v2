@@ -21,7 +21,7 @@ func NewEmailServiceImpl(rep repository.EmailRepository) service.EmailService {
 func (impl *emailServiceImpl) FindByEmail(ctx context.Context, resource model.LoginRequest) (entity.Email, error) {
 	var userEmail entity.Email
 
-	if userEmail = impl.repository.FindByEmail(ctx, resource); userEmail == (entity.Email{}) {
+	if userEmail, _ := impl.repository.FindByEmail(ctx, resource); userEmail == (entity.Email{}) {
 		return entity.Email{}, errors.New("Email Not Found")
 	}
 	return userEmail, nil

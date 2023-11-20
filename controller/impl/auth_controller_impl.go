@@ -28,10 +28,10 @@ func (impl *authControllerImpl) Login(c *fiber.Ctx) error {
 
 	err := c.BodyParser(&req)
 
-	logger := utils.GetControllerLogger("Login")
+	logger := utils.GetControllerLogger(c.Path())
 
 	if err != nil {
-		logger.Error(err.Error() + "Route:Login")
+		logger.Error(err.Error())
 		return err
 	}
 
@@ -51,10 +51,10 @@ func (impl *authControllerImpl) Login(c *fiber.Ctx) error {
 
 		jwtToken, err := utils.GenerateToken(userDetails.ID)
 		if err != nil {
-			logger.Error(err.Error() + fmt.Sprintf("UserID:%v,Route:", userDetails.ID) + "Login")
+			logger.Error(err.Error() + fmt.Sprintf("UserID:%v", userDetails.ID))
 		}
 
-		logger.Info(fmt.Sprintf("UserID:%v,Route:", userDetails.ID) + "Login")
+		logger.Info(fmt.Sprintf("UserID:%v,", userDetails.ID))
 		return c.Status(fiber.StatusOK).JSON(jwtToken)
 	}
 	return c.Status(fiber.StatusUnauthorized).SendString("Invalid Credentials")
@@ -65,7 +65,7 @@ func (impl *authControllerImpl) IsAuth(c *fiber.Ctx) error {
 	config := config.New()
 	accessTokenName := config.Get("ACCESS_TOKEN_NAME")
 	userToken := c.Cookies(accessTokenName)
-	logger := utils.GetControllerLogger("Is-Auth")
+	logger := utils.GetControllerLogger(c.Path())
 
 	userID, err := utils.VerifyToken(userToken)
 
@@ -78,18 +78,9 @@ func (impl *authControllerImpl) IsAuth(c *fiber.Ctx) error {
 		if err != nil {
 			return c.Status(fiber.StatusUnauthorized).SendString(err.Error())
 		}
-		logger.Info(fmt.Sprintf("UserID:%v,Route:", userID) + "Is-Auth")
+		logger.Info(fmt.Sprintf("UserID:%v,", userID))
 		return c.Status(fiber.StatusOK).JSON(userDetails)
 	}
 
 	return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
-}
-
-func (impl *authControllerImpl) EditProfile(c *fiber.Ctx) error {
-	// var req model.EditProfile
-
-	// if ok := utils.IsValidPhoneNumber(req.PhoneNumber); !ok {
-
-	// }
-	return c.Status(fiber.StatusOK).SendString("Profile Updated")
 }

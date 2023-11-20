@@ -21,7 +21,7 @@ func CheckPasswordHash(password string, hash string) bool {
 func GenerateToken(userID int64) (string, error) {
 	config := config.New()
 	jwtSecret := config.Get("JWT_SECRET")
-	tokenLifespan, err := strconv.Atoi(config.Get("TokenHourLifeSpan"))
+	tokenLifespan, err := strconv.Atoi(config.Get("TOKEN_HOUR_SPAN"))
 
 	if err != nil {
 		return "", err

@@ -2,7 +2,6 @@ package impl
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/delta/DAuth-backend-v2/entity"
 	"github.com/delta/DAuth-backend-v2/model"
@@ -18,11 +17,11 @@ func NewEmailRepositoryImpl(DB *gorm.DB) repository.EmailRepository {
 	return &emailRepositoryImpl{DB: DB}
 }
 
-func (repository *emailRepositoryImpl) FindByEmail(ctx context.Context, resource model.LoginRequest) entity.Email {
+func (repository *emailRepositoryImpl) FindByEmail(ctx context.Context, resource model.LoginRequest) (entity.Email, error) {
 	var userEmail entity.Email
 	err := repository.DB.WithContext(ctx).Where("email = ?", resource.Email).First(&userEmail).Error
 	if err != nil {
-		fmt.Println("Error : Email not found")
+		return entity.Email{}, err
 	}
-	return userEmail
+	return userEmail, nil
 }

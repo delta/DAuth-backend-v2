@@ -7,9 +7,7 @@ import (
 )
 
 type ResourceOwnerRepository interface {
-	Insert(ctx context.Context, resource entity.ResourceOwner) entity.ResourceOwner
-	Delete(ctx context.Context, resource entity.ResourceOwner)
-	Exists(ctx context.Context, resource entity.ResourceOwner) bool
-	FindByEmailID(ctx context.Context, resource int64) entity.ResourceOwner
-	FindByID(ctx context.Context, resource int64) entity.ResourceOwner
+	Exists(ctx context.Context, resource entity.ResourceOwner) (bool, error)
+	FindByEmailID(ctx context.Context, resource int64) (entity.ResourceOwner, error)
+	FindByID(ctx context.Context, resource int64) (entity.ResourceOwner, error)
 }
