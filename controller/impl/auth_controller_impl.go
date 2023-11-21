@@ -33,7 +33,7 @@ func (impl *authControllerImpl) Login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).SendString(ErrInvalidRequest.Error())
 	}
 
-	rex, err := regexp.MatchString(`^[\w-\.]+@nitt.edu`, req.Email)
+	rex, err := regexp.MatchString(`^[\w-\.]+@nitt.edu$`, req.Email)
 
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString(ErrInvalidRequest.Error())
