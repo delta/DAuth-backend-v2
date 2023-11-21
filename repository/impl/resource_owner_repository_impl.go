@@ -2,7 +2,6 @@ package impl
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/delta/DAuth-backend-v2/entity"
 	"github.com/delta/DAuth-backend-v2/repository"
@@ -17,29 +16,35 @@ type resourceOwnerRepositoryImpl struct {
 	*gorm.DB
 }
 
-func (repository *resourceOwnerRepositoryImpl) Insert(ctx context.Context, resource entity.ResourceOwner) entity.ResourceOwner {
-	err := repository.DB.WithContext(ctx).Create(&resource).Error
-	if err != nil {
-		fmt.Println("Error")
-	}
-	return resource
-}
-
-func (repository *resourceOwnerRepositoryImpl) Delete(ctx context.Context, resource entity.ResourceOwner) {
-	err := repository.DB.WithContext(ctx).Delete(&resource).Error
-	if err != nil {
-		fmt.Printf("Error deleting, %s", err)
-	}
-}
-
-func (repository *resourceOwnerRepositoryImpl) Exists(ctx context.Context, resource entity.ResourceOwner) bool {
+func (repository *resourceOwnerRepositoryImpl) Exists(ctx context.Context, resource entity.ResourceOwner) (bool, error) {
 	count := int64(0)
 	err := repository.DB.WithContext(ctx).Find(&resource).Count(&count).Error
 
 	if err != nil {
-		fmt.Println("Error counting resource")
-		return false
+		return false, err
 	}
 
-	return count == 1
+	return count == 1, nil
+}
+
+func (repository *resourceOwnerRepositoryImpl) FindByEmailID(ctx context.Context, resource int64) (entity.ResourceOwner, error) {
+	var userDetails entity.ResourceOwner
+	err := repository.DB.WithContext(ctx).Where("email_id = ?", resource).First(&userDetails).Error
+
+	if err != nil {
+		return entity.ResourceOwner{}, err
+	}
+
+	return userDetails, nil
+}
+
+func (repository *resourceOwnerRepositoryImpl) FindByID(ctx context.Context, resource int64) (entity.ResourceOwner, error) {
+	var userDetails entity.ResourceOwner
+	err := repository.DB.WithContext(ctx).Where("id = ?", resource).First(&userDetails).Error
+
+	if err != nil {
+		return entity.ResourceOwner{}, err
+	}
+
+	return userDetails, nil
 }

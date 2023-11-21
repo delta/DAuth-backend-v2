@@ -5,6 +5,6 @@ import (
 )
 
 type AuthController interface {
-	Insert(c *fiber.Ctx) error
-	Remove(c *fiber.Ctx) error
+	IsAuth(c *fiber.Ctx) error
+	Login(c *fiber.Ctx) error
 }

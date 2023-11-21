@@ -8,3 +8,7 @@ import (
 func (r *registry) NewResourceOwnerRepository() repository.ResourceOwnerRepository {
 	return impl.NewResourceOwnerRepositoryImpl(r.db)
 }
+
+func (r *registry) NewEmailRepository() repository.EmailRepository {
+	return impl.NewEmailRepositoryImpl(r.db)
+}

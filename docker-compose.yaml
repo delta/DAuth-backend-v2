@@ -13,6 +13,7 @@ services:
     depends_on:
       - dauth_v2_db
     volumes:
+      - ./:/app
       - ./docker_volumes/logs:/app/logs
   dauth_v2_db:
     container_name: dauth_v2_db

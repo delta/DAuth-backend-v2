@@ -6,6 +6,6 @@ import (
 )
 
 func NewAuthRouter(app fiber.Router, controller controller.AuthController) {
-	app.Post("/add", controller.Insert)
-	app.Delete("/delete", controller.Remove)
+	app.Get("/is-auth", controller.IsAuth)
+	app.Post("/login", controller.Login)
 }

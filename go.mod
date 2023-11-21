@@ -1,12 +1,13 @@
 module github.com/delta/DAuth-backend-v2
 
-go 1.20
+go 1.18
 
 require (
 	github.com/gofiber/fiber/v2 v2.46.0
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/sirupsen/logrus v1.9.3
 	github.com/swaggo/fiber-swagger v1.3.0
-	github.com/swaggo/swag v1.16.1
+	golang.org/x/crypto v0.7.0
 )
 
 require (
@@ -21,6 +22,7 @@ require (
 	github.com/rogpeppe/go-internal v1.10.0 // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/swaggo/files v1.0.1 // indirect
+	github.com/swaggo/swag v1.16.1 // indirect
 	golang.org/x/net v0.10.0 // indirect
 	golang.org/x/tools v0.9.3 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
