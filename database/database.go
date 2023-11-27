@@ -53,6 +53,6 @@ func Connect(config config.Config) *gorm.DB {
 	}
 
 	fmt.Print(color.GreenString("Database connected!"))
-	
+
 	return db
 }
