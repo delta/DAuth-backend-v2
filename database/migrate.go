@@ -8,6 +8,12 @@ import (
 func Migrate(db *gorm.DB) {
 	for _, entity := range []interface{}{
 		entity.ResourceOwner{},
+		entity.AuthorisedApps{},
+		entity.Client{},
+		entity.CodeChallenge{},
+		entity.Code{},
+		entity.Email{},
+		entity.Token{},
 	} {
 		if err := db.AutoMigrate(&entity); err != nil {
 			panic(err)
