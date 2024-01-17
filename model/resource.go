@@ -19,3 +19,10 @@ type EditProfile struct {
 	PhoneNumber string `json:"phoneNumber" form:"phoneNumber" validation:"required"`
 	Gender      string `json:"gender" form:"gender" validation:"required"`
 }
+
+type Student struct {
+	RollNumber string `json:"roll_number"`
+	Name       string `json:"name"`
+	Email      string `json:"email"`
+	Webmail    bool   `json:"webmail"`
+}

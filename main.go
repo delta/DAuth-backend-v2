@@ -1,3 +1,4 @@
+// main.go
 package main
 
 import (
@@ -23,7 +24,7 @@ func main() {
 
 	app := fiber.New()
 
-	router.NewAppRouter(app, registry)
+	router.SetupRouter(app, registry)
 
 	err := app.Listen(":" + config.Get("PORT"))
 
